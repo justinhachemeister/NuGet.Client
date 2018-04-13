@@ -37,10 +37,10 @@ namespace NuGet.PackageManagement.VisualStudio
         public static async Task<bool> IsNuGetProjectUpgradeableAsync(NuGetProject nuGetProject, Project envDTEProject = null)
         {
             var solutionManager = ServiceLocator.GetInstance<IVsSolutionManager>();
-            return await IsNuGetProjectUpgradeableAsync(nuGetProject, solutionManager, envDTEProject);
+            return await IsNuGetProjectUpgradeableAsync(nuGetProject, solutionManager, true, envDTEProject);
         }
 
-        public static async Task<bool> IsNuGetProjectUpgradeableAsync(NuGetProject nuGetProject, IVsSolutionManager solutionManager, Project envDTEProject = null)
+        public static async Task<bool> IsNuGetProjectUpgradeableAsync(NuGetProject nuGetProject, IVsSolutionManager solutionManager, bool hasExistingPackagesConfig, Project envDTEProject = null)
         {
             await NuGetUIThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -62,9 +62,9 @@ namespace NuGet.PackageManagement.VisualStudio
 
             // check if current project is packages.config based or not
             var msBuildNuGetProject = nuGetProject as MSBuildNuGetProject;
-            if (msBuildNuGetProject == null || !msBuildNuGetProject.PackagesConfigNuGetProject.PackagesConfigExists())
+            if (msBuildNuGetProject == null || (hasExistingPackagesConfig && !msBuildNuGetProject.PackagesConfigNuGetProject.PackagesConfigExists()))
             {
-                return false;
+                return false; // TODO NK - can't reuse this
             }
 
             // this further check if current project system supports VSProject4 or not which is essential to skip

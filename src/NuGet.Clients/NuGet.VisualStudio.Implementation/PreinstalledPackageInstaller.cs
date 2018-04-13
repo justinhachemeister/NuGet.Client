@@ -175,7 +175,7 @@ namespace NuGet.VisualStudio
             var defaultProjectContext = new VSAPIProjectContext();
 
             var nuGetProject = await _solutionManager.GetOrCreateProjectAsync(project, defaultProjectContext);
-            if (preferPackageReferenceFormat && await NuGetProjectUpgradeUtility.IsNuGetProjectUpgradeableAsync(nuGetProject, _solutionManager, project))
+            if (preferPackageReferenceFormat && await NuGetProjectUpgradeUtility.IsNuGetProjectUpgradeableAsync(nuGetProject, _solutionManager, false, project))
             {
                 nuGetProject = await _solutionManager.UpgradeProjectToPackageReferenceAsync(nuGetProject);
             }
