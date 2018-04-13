@@ -36,6 +36,12 @@ namespace NuGet.PackageManagement.VisualStudio
 
         public static async Task<bool> IsNuGetProjectUpgradeableAsync(NuGetProject nuGetProject, Project envDTEProject = null)
         {
+            var solutionManager = ServiceLocator.GetInstance<IVsSolutionManager>();
+            return await IsNuGetProjectUpgradeableAsync(nuGetProject, solutionManager, envDTEProject);
+        }
+
+        public static async Task<bool> IsNuGetProjectUpgradeableAsync(NuGetProject nuGetProject, IVsSolutionManager solutionManager, Project envDTEProject = null)
+        {
             await NuGetUIThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
             if (nuGetProject == null && envDTEProject == null)
@@ -45,8 +51,6 @@ namespace NuGet.PackageManagement.VisualStudio
 
             if (nuGetProject == null)
             {
-                var solutionManager = ServiceLocator.GetInstance<IVsSolutionManager>();
-
                 var projectSafeName = await EnvDTEProjectInfoUtility.GetCustomUniqueNameAsync(envDTEProject);
                 nuGetProject = await solutionManager.GetNuGetProjectAsync(projectSafeName);
 
