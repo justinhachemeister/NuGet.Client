@@ -27,10 +27,9 @@ if ($BuildRTM -eq 'false')
 {   
 
     $NuGetClientRoot = $env:BUILD_REPOSITORY_LOCALPATH
-    $NuGetValidator = [System.IO.Path]::Combine($NuGetClientRoot, 'build', 'NuGetValidator.1.4.0.4', 'tools', 'NuGetValidator.exe')
-    $VsixLogOutputDir = [System.IO.Path]::Combine($BuildOutputTargetPath, 'LocalizationValidation', 'vsix' )
+    $NuGetValidator = [System.IO.Path]::Combine($NuGetClientRoot, 'build', 'NuGetValidator.2.0.0-beta1', 'tools', 'NuGetValidator.exe')
     $LocalizationRepository = [System.IO.Path]::Combine($NuGetClientRoot, 'submodules', 'NuGet.Build.Localization', 'localize', 'comments', '15')
-    
+
     if ($ValidateVsix) 
     {
         $VsixLocation = [System.IO.Path]::Combine($BuildOutputTargetPath, 'artifacts', 'VS15', 'NuGet.Tools.vsix' )
@@ -51,6 +50,5 @@ if ($BuildRTM -eq 'false')
         & $NuGetValidator localization --artifacts-path $ArtifactsLocation --output-path $ArtifactsLogOutputDir --comments-path $LocalizationRepository
     }
 
-    # We want to exit the process with success even if there are errors.
-    exit 0
+    exit $LASTEXITCODE
 }

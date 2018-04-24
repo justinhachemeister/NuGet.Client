@@ -3,7 +3,7 @@
   <dc:creator>Ankit Mishra</dc:creator>
   <dc:description>Package used internally in NuGet team's localization validation pipeline.</dc:description>
   <dc:identifier>NuGetValidator</dc:identifier>
-  <version>1.4.0.4</version>
+  <version>2.0.0.0-beta1</version>
   <keywords></keywords>
-  <lastModifiedBy>NuGet.Build.Tasks.Pack, Version=4.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35;Microsoft Windows NT 10.0.16299.0;.NET Framework 4.6</lastModifiedBy>
+  <lastModifiedBy>NuGet.Build.Tasks.Pack, Version=4.7.0.5, Culture=neutral, PublicKeyToken=31bf3856ad364e35;Microsoft Windows NT 10.0.16299.0;.NET Framework 4.6</lastModifiedBy>
 </coreProperties>
