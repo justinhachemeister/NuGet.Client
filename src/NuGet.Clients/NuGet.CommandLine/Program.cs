@@ -39,6 +39,9 @@ namespace NuGet.CommandLine
 
         public static int Main(string[] args)
         {
+            AppContext.SetSwitch("Switch.System.IO.UseLegacyPathHandling", false);
+            AppContext.SetSwitch("Switch.System.IO.BlockLongPaths", false);
+
 #if DEBUG
             if (args.Contains(DebugOption, StringComparer.OrdinalIgnoreCase))
             {
