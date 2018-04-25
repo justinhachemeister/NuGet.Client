@@ -313,14 +313,14 @@ phases:
     inputs:
       scriptName: "$(Build.Repository.LocalPath)\\scripts\\cibuild\\BuildValidator.ps1"
       arguments: "-BuildRTM $(BuildRTM) -BuildOutputTargetPath $(BuildOutputTargetPath) -ValidateVsix"
-    condition: " and(succeeded(), eq(variables['IsOfficialBuild'], 'true')) "
+    condition: " and(succeeded(), eq(variables['IsOfficialBuild'], 'false')) "
   
   - task: PowerShell@1
     displayName: "Validate Repository Artifacts Localization"
     inputs:
       scriptName: "$(Build.Repository.LocalPath)\\scripts\\cibuild\\BuildValidator.ps1"
       arguments: "-BuildRTM $(BuildRTM) -BuildOutputTargetPath $(BuildOutputTargetPath)"
-    condition: " and(succeeded(), eq(variables['IsOfficialBuild'], 'true')) "
+    condition: " and(succeeded(), eq(variables['IsOfficialBuild'], 'false')) "
 
   - task: MicroBuildCleanup@1
     displayName: "Perform Cleanup Tasks"
