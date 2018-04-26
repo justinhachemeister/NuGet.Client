@@ -36,12 +36,6 @@ namespace NuGet.PackageManagement.VisualStudio
 
         public static async Task<bool> IsNuGetProjectUpgradeableAsync(NuGetProject nuGetProject, Project envDTEProject = null)
         {
-            var solutionManager = ServiceLocator.GetInstance<IVsSolutionManager>();
-            return await IsNuGetProjectUpgradeableAsync(nuGetProject, solutionManager, true, envDTEProject);
-        }
-
-        public static async Task<bool> IsNuGetProjectUpgradeableAsync(NuGetProject nuGetProject, IVsSolutionManager solutionManager, bool hasExistingPackagesConfig, Project envDTEProject = null)
-        {
             await NuGetUIThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
             if (nuGetProject == null && envDTEProject == null)
@@ -51,6 +45,8 @@ namespace NuGet.PackageManagement.VisualStudio
 
             if (nuGetProject == null)
             {
+                var solutionManager = ServiceLocator.GetInstance<IVsSolutionManager>();
+
                 var projectSafeName = await EnvDTEProjectInfoUtility.GetCustomUniqueNameAsync(envDTEProject);
                 nuGetProject = await solutionManager.GetNuGetProjectAsync(projectSafeName);
 
@@ -62,9 +58,9 @@ namespace NuGet.PackageManagement.VisualStudio
 
             // check if current project is packages.config based or not
             var msBuildNuGetProject = nuGetProject as MSBuildNuGetProject;
-            if (msBuildNuGetProject == null || (hasExistingPackagesConfig && !msBuildNuGetProject.PackagesConfigNuGetProject.PackagesConfigExists()))
+            if (msBuildNuGetProject == null || !msBuildNuGetProject.PackagesConfigNuGetProject.PackagesConfigExists())
             {
-                return false; // TODO NK - can't reuse this
+                return false;
             }
 
             // this further check if current project system supports VSProject4 or not which is essential to skip
@@ -74,6 +70,7 @@ namespace NuGet.PackageManagement.VisualStudio
                 return false;
             }
 
+            // up to here, none of the checks are needed
             if (envDTEProject == null)
             {
                 var vsmsBuildNuGetProjectSystem =
@@ -89,7 +86,13 @@ namespace NuGet.PackageManagement.VisualStudio
             {
                 return false;
             }
-            var projectGuids = VsHierarchyUtility.GetProjectTypeGuids(envDTEProject);
+
+            return IsProjectPackageReferenceCompatible(envDTEProject);
+        }
+
+        public static bool IsProjectPackageReferenceCompatible(Project project)
+        {
+            var projectGuids = VsHierarchyUtility.GetProjectTypeGuids(project);
 
             if (projectGuids.Any(t => UnupgradeableProjectTypes.Contains(t)))
             {
@@ -97,7 +100,7 @@ namespace NuGet.PackageManagement.VisualStudio
             }
 
             // Project is supported language, and not an unsupported type
-            return UpgradeableProjectTypes.Contains(envDTEProject.Kind) &&
+            return UpgradeableProjectTypes.Contains(project.Kind) &&
                    projectGuids.All(projectTypeGuid => !SupportedProjectTypes.IsUnsupported(projectTypeGuid));
         }
 
