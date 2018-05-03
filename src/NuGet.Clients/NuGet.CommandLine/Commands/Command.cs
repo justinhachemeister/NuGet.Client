@@ -213,7 +213,6 @@ namespace NuGet.CommandLine
                 .BuildAll(Verbosity.ToString())
                 .ToList();
             var securePluginProviders =  (new SecureCredentialProviderBuilder(PluginManager.Instance, Console)).BuildAll().Result;
-
             providers.Add(new CredentialProviderAdapter(new SettingsCredentialProvider(SourceProvider, Console)));
             providers.AddRange(securePluginProviders);
             providers.AddRange(pluginProviders);

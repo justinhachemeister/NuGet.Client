@@ -147,7 +147,7 @@ namespace Dotnet.Integration.Test
         /// <summary>
         /// dotnet.exe args
         /// </summary>
-        internal CommandRunnerResult RunDotnet(string workingDirectory, string args)
+        internal CommandRunnerResult RunDotnet(string workingDirectory, string args, bool ignoreExitCode=false)
         {
 
             var result = CommandRunner.Run(TestDotnetCli,
@@ -155,6 +155,11 @@ namespace Dotnet.Integration.Test
                 args,
                 waitForExit: true,
                 environmentVariables: _processEnvVars);
+
+            if (!ignoreExitCode)
+            {
+                Assert.True(result.ExitCode == 0, $"dotnet.exe {args} command failed with following log information :\n {result.AllOutput}");
+            }
 
             return result;
         }
@@ -326,7 +331,7 @@ namespace Dotnet.Integration.Test
 
         public void Dispose()
         {
-            RunDotnet(Path.GetDirectoryName(TestDotnetCli), "buildserver shutdown");
+            RunDotnet(Path.GetDirectoryName(TestDotnetCli), "build-server shutdown");
             KillDotnetExe(TestDotnetCli);
             DeleteDirectory(Path.GetDirectoryName(TestDotnetCli));
         }
